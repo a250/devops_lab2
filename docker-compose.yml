@@ -1,0 +1,39 @@
+version: '3'
+services:
+  jupyter:
+    image: jupyter/minimal-notebook
+    ports:
+      - "8888:8888"
+    volumes:
+      - './config:/home/jovyan/.jupyter'
+      - './work:/home/jovyan/work'
+      - '/opt/lab1/data:/home/jovyan/work/data'
+    networks:
+      - cloud-backend  
+    user: jovyan
+    environment:
+      GRANT_SUDO: "yes"
+
+  db:
+    image: postgres
+    restart: always
+    volumes:
+      - './pgdata:/var/lib/postgresql/data'
+    networks:
+      - cloud-backend
+    environment:
+      PGDATA: /var/lib/postgresql/data
+      POSTGRES_PASSWORD: az_lab_db
+      POSTGRES_DB: db
+
+
+  adminer:
+    image: adminer
+    restart: always
+    ports:
+      - 8080:8080
+    networks:
+      - cloud-backend
+
+networks:
+  cloud-backend:
